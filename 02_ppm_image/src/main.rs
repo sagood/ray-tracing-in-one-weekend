@@ -1,5 +1,7 @@
 use std::io::{self, Write};
 
+mod util;
+
 const IMAGE_WIDTH: usize = 256;
 const IMAGE_HEIGHT: usize = 256;
 
