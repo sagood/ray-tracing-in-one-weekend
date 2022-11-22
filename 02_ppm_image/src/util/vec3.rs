@@ -3,8 +3,6 @@ use std::{
     ops::{Add, AddAssign, Div, DivAssign, Mul, MulAssign, Neg, Sub, SubAssign},
 };
 
-// use Vec3 as Point3;
-
 #[derive(Debug, Copy, Clone, PartialEq)]
 pub struct Vec3 {
     e: [f64; 3],
