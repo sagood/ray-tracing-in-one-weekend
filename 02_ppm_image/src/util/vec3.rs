@@ -4,7 +4,6 @@ use std::{
 };
 
 // use Vec3 as Point3;
-// use Vec3 as Color;
 
 #[derive(Debug, Copy, Clone, PartialEq)]
 pub struct Vec3 {
