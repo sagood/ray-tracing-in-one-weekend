@@ -2,10 +2,12 @@ use std::io::{self, Write};
 
 mod util;
 
-const IMAGE_WIDTH: usize = 256;
-const IMAGE_HEIGHT: usize = 256;
-
 fn main() {
+    // Image
+    const IMAGE_WIDTH: usize = 256;
+    const IMAGE_HEIGHT: usize = 256;
+
+    // Render
     print!("P3\n{} {}\n255\n", IMAGE_WIDTH, IMAGE_HEIGHT);
 
     for j in (0..IMAGE_HEIGHT).rev() {
