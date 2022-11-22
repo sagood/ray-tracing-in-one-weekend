@@ -225,17 +225,75 @@ mod tests {
     }
 
     #[test]
-    fn test_vec3_add_vec3() {
+    fn test_vec3_addassign_vec3() {
         let mut a = Vec3::new(1.0, 2.0, 3.0);
         let b = Vec3::new(4.0, 5.0, 6.0);
         a += b;
         assert_eq!(5.0, a.x());
         assert_eq!(7.0, a.y());
         assert_eq!(9.0, a.z());
+
+        let mut a = Vec3::new(1.0, 2.0, 3.0);
+        let b = Vec3::new(4.0, 5.0, 6.0);
+        a += &b;
+        assert_eq!(5.0, a.x());
+        assert_eq!(7.0, a.y());
+        assert_eq!(9.0, a.z());
     }
 
     #[test]
-    fn test_vec3_multiply_f64() {
+    fn test_vec3_subassign_vec3() {
+        let mut a = Vec3::new(1.0, 2.0, 3.0);
+        let b = Vec3::new(4.0, 5.0, 6.0);
+        a -= b;
+        assert_eq!(-3.0, a.x());
+        assert_eq!(-3.0, a.y());
+        assert_eq!(-3.0, a.z());
+
+        let mut a = Vec3::new(1.0, 2.0, 3.0);
+        let b = Vec3::new(4.0, 5.0, 6.0);
+        a -= &b;
+        assert_eq!(-3.0, a.x());
+        assert_eq!(-3.0, a.y());
+        assert_eq!(-3.0, a.z());
+    }
+
+    #[test]
+    fn test_vec3_multiplyassign_vec3() {
+        let mut a = Vec3::new(1.0, 2.0, 3.0);
+        let b = Vec3::new(4.0, 5.0, 6.0);
+        a *= b;
+        assert_eq!(4.0, a.x());
+        assert_eq!(10.0, a.y());
+        assert_eq!(18.0, a.z());
+
+        let mut a = Vec3::new(1.0, 2.0, 3.0);
+        let b = Vec3::new(4.0, 5.0, 6.0);
+        a *= &b;
+        assert_eq!(4.0, a.x());
+        assert_eq!(10.0, a.y());
+        assert_eq!(18.0, a.z());
+    }
+
+    #[test]
+    fn test_vec3_divideassign_vec3() {
+        let a = Vec3::new(1.0, 2.0, 3.0);
+        let mut b = Vec3::new(4.0, 5.0, 6.0);
+        b /= a;
+        assert_eq!(4.0, b.x());
+        assert_eq!(2.5, b.y());
+        assert_eq!(2.0, b.z());
+
+        let a = Vec3::new(1.0, 2.0, 3.0);
+        let mut b = Vec3::new(4.0, 5.0, 6.0);
+        b /= &a;
+        assert_eq!(4.0, b.x());
+        assert_eq!(2.5, b.y());
+        assert_eq!(2.0, b.z());
+    }
+
+    #[test]
+    fn test_vec3_multiplyassign_f64() {
         let mut a = Vec3::new(1.0, 2.0, 3.0);
         let b = 2.0;
         a *= b;
@@ -245,7 +303,7 @@ mod tests {
     }
 
     #[test]
-    fn test_vec3_divide_f64() {
+    fn test_vec3_divideassign_f64() {
         let mut a = Vec3::new(1.0, 2.0, 3.0);
         let b = 2.0;
         a /= b;
