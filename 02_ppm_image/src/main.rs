@@ -22,6 +22,7 @@ fn main() {
     const IMAGE_WIDTH: usize = 400;
     const IMAGE_HEIGHT: usize = (IMAGE_WIDTH as f64 / ASPECT_RATIO) as usize;
     const SAMPLES_PER_PIXEL: usize = 100;
+    const MAX_DEPTH: i32 = 50;
 
     // World
     let mut world = HittableList::new();
@@ -43,7 +44,7 @@ fn main() {
                 let u = (i as f64 + random_double()) / (IMAGE_WIDTH as f64 - 1.0);
                 let v = (j as f64 + random_double()) / (IMAGE_HEIGHT as f64 - 1.0);
                 let r = camera.get_ray(u, v);
-                pixel_color += ray_color(&r, &world);
+                pixel_color += ray_color(&r, &world, MAX_DEPTH);
             }
 
             let s = pixel_color.as_color_repr(SAMPLES_PER_PIXEL);
@@ -53,10 +54,17 @@ fn main() {
     eprintln!("\nDone.");
 }
 
-fn ray_color(r: &Ray, world: &dyn Hittable) -> Vec3 {
+fn ray_color(r: &Ray, world: &dyn Hittable, depth: i32) -> Vec3 {
     let mut rec = HitRecord::default();
+
+    // If we've exceeded the ray bounce limit, no more light is gathered.
+    if depth <= 0 {
+        return Vec3::new(0.0, 0.0, 0.0);
+    }
+
     if world.hit(r, 0.0, INFINITY, &mut rec) {
-        return 0.5 * (rec.normal + Vec3::new(1.0, 1.0, 1.0));
+        let target = rec.p + rec.normal + Vec3::random_in_unit_sphere();
+        return 0.5 * ray_color(&Ray::new(&rec.p, &(target - rec.p)), world, depth - 1);
     }
 
     let unit_direction = r.dir().unit_vector();

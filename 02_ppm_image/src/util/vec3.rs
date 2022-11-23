@@ -3,6 +3,8 @@ use std::{
     ops::{Add, AddAssign, Div, DivAssign, Mul, MulAssign, Neg, Sub, SubAssign},
 };
 
+use super::rtweekend::{random_double, random_double_by_range};
+
 #[derive(Debug, Copy, Clone, PartialEq)]
 pub struct Vec3 {
     e: [f64; 3],
@@ -47,6 +49,28 @@ impl Vec3 {
 
     pub fn unit_vector(&self) -> Vec3 {
         self / self.length()
+    }
+
+    pub fn random() -> Vec3 {
+        Vec3::new(random_double(), random_double(), random_double())
+    }
+
+    pub fn random_by_range(min: f64, max: f64) -> Vec3 {
+        Vec3::new(
+            random_double_by_range(min, max),
+            random_double_by_range(min, max),
+            random_double_by_range(min, max),
+        )
+    }
+
+    pub fn random_in_unit_sphere() -> Vec3 {
+        loop {
+            let p = Vec3::random_by_range(-1.0, 1.0);
+            if p.length_squared() >= 1.0 {
+                continue;
+            }
+            return p;
+        }
     }
 }
 
