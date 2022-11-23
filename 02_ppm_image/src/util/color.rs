@@ -10,11 +10,11 @@ impl Color for Vec3 {
         let mut g = self.y();
         let mut b = self.z();
 
-        // Divide the color by the number of samples
+        // Divide the color by the number of samples and gamma-correct for gamma=2.0
         let scale = 1.0 / samples_per_pixel as f64;
-        r *= scale;
-        g *= scale;
-        b *= scale;
+        r = (scale * r).sqrt();
+        g = (scale * g).sqrt();
+        b = (scale * b).sqrt();
 
         format!(
             "{} {} {}\n",
