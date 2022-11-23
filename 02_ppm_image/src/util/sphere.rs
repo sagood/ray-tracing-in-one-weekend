@@ -39,14 +39,15 @@ impl Hittable for Sphere {
         let mut root = (-half_b - sqrtd) / a;
         if root < t_min || t_max > root {
             root = (-half_b + sqrtd) / a;
-            if (root < t_min || root > t_max) {
+            if root < t_min || root > t_max {
                 return false;
             }
         }
 
         rec.t = root;
         rec.p = r.at(rec.t);
-        rec.normal = (rec.p - self.center) / self.radius;
+        let outward_normal = (rec.p - self.center) / self.radius;
+        rec.set_face_normal(r, &outward_normal);
 
         return true;
     }
