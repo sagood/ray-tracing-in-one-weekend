@@ -1,16 +1,26 @@
-use super::vec3::Vec3;
+use super::{rtweekend::clamp, vec3::Vec3};
 
 pub trait Color {
-    fn as_color_repr(&self) -> String;
+    fn as_color_repr(&self, samples_per_pixel: usize) -> String;
 }
 
 impl Color for Vec3 {
-    fn as_color_repr(&self) -> String {
+    fn as_color_repr(&self, samples_per_pixel: usize) -> String {
+        let mut r = self.x();
+        let mut g = self.y();
+        let mut b = self.z();
+
+        // Divide the color by the number of samples
+        let scale = 1.0 / samples_per_pixel as f64;
+        r *= scale;
+        g *= scale;
+        b *= scale;
+
         format!(
             "{} {} {}\n",
-            (255.999 * self.x()) as i32,
-            (255.999 * self.y()) as i32,
-            (255.999 * self.z()) as i32
+            (256.0 * clamp(r, 0.0, 0.999)) as i32,
+            (256.0 * clamp(g, 0.0, 0.999)) as i32,
+            (256.0 * clamp(b, 0.0, 0.999)) as i32,
         )
     }
 }
