@@ -1,9 +1,17 @@
-use std::io::{self, Write};
+use std::{
+    io::{self, Write},
+    sync::Arc,
+};
 
-use util::{ray::Ray, vec3::Vec3};
+use util::{
+    hit::{HitRecord, Hittable},
+    ray::Ray,
+    rtweekend::INFINITY,
+    vec3::Vec3,
+};
 use Vec3 as Point3;
 
-use crate::util::color::Color;
+use crate::util::{color::Color, hit::HittableList, sphere::Sphere};
 mod util;
 
 fn main() {
@@ -11,6 +19,11 @@ fn main() {
     const ASPECT_RATIO: f64 = 16.0 / 9.0;
     const IMAGE_WIDTH: usize = 400;
     const IMAGE_HEIGHT: usize = (IMAGE_WIDTH as f64 / ASPECT_RATIO) as usize;
+
+    // World
+    let mut world = HittableList::new();
+    world.add(Arc::new(Sphere::new(Point3::new(0.0, 0.0, -1.0), 0.5)));
+    world.add(Arc::new(Sphere::new(Point3::new(0.0, -100.5, -1.0), 100.0)));
 
     // Camera
     let viewport_height = 2.0;
@@ -36,7 +49,7 @@ fn main() {
                 &origin,
                 &(lower_left_cornet + u * horizontal + v * vertical - origin),
             );
-            let pixel_color = ray_color(&r);
+            let pixel_color = ray_color(&r, &world);
             let s = pixel_color.as_color_repr();
 
             print!("{}", s);
@@ -45,28 +58,13 @@ fn main() {
     eprintln!("\nDone.");
 }
 
-fn ray_color(r: &Ray) -> Vec3 {
-    let mut t = hit_sphere(&Point3::new(0.0, 0.0, -1.0), 0.5, r);
-    if t > 0.0 {
-        let N = (r.at(t) - Vec3::new(0.0, 0.0, -1.0)).unit_vector();
-        return 0.5 * Vec3::new(N.x() + 1.0, N.y() + 1.0, N.z() + 1.0);
+fn ray_color(r: &Ray, world: &dyn Hittable) -> Vec3 {
+    let mut rec = HitRecord::default();
+    if world.hit(r, 0.0, INFINITY, &mut rec) {
+        return 0.5 * (rec.normal + Vec3::new(1.0, 1.0, 1.0));
     }
 
     let unit_direction = r.dir().unit_vector();
-    t = 0.5 * (unit_direction.y() + 1.0);
-
-    (1.0 - t) * Vec3::new(1.0, 1.0, 1.0) + t * Vec3::new(0.5, 0.7, 1.0)
-}
-
-fn hit_sphere(center: &Point3, radius: f64, r: &Ray) -> f64 {
-    let oc = r.origin() - center;
-    let a = r.dir().length_squared();
-    let half_b = oc.dot(r.dir());
-    let c = oc.length_squared() - radius * radius;
-    let discriminant = half_b * half_b - a * c;
-    if discriminant < 0.0 {
-        -1.0
-    } else {
-        (-half_b - discriminant.sqrt()) / a
-    }
+    let t = 0.5 * (unit_direction.y() + 1.0);
+    return (1.0 - t) * Vec3::new(1.0, 1.0, 1.0) + t * Vec3::new(0.5, 0.7, 1.0);
 }
