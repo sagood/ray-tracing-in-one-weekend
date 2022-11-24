@@ -77,6 +77,20 @@ impl Vec3 {
         Vec3::random_in_unit_sphere().unit_vector()
     }
 
+    pub fn random_unit_disk() -> Vec3 {
+        loop {
+            let p = Vec3::new(
+                random_double_by_range(-1.0, 1.0),
+                random_double_by_range(-1.0, 1.0),
+                0.0,
+            );
+            if p.length_squared() >= 1.0 {
+                continue;
+            }
+            return p;
+        }
+    }
+
     pub fn near_zero(&self) -> bool {
         let s = 1e-8;
         self.e[0].abs() < s && self.e[1].abs() < s && self.e[2].abs() < s
