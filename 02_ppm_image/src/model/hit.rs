@@ -1,12 +1,15 @@
 use std::sync::Arc;
 
+use crate::material::{lambertian::Lambertian, material::Material};
+
 use super::{ray::Ray, vec3::Vec3};
 use Vec3 as Point3;
 
-#[derive(Debug, Copy, Clone)]
+#[derive(Clone)]
 pub struct HitRecord {
     pub p: Point3,
     pub normal: Vec3,
+    pub material: Arc<dyn Material>,
     pub t: f64,
     pub front_face: bool,
 }
@@ -27,6 +30,7 @@ impl Default for HitRecord {
         Self {
             p: Default::default(),
             normal: Default::default(),
+            material: Arc::new(Lambertian::new(&Vec3::new(0.0, 0.0, 0.0))),
             t: Default::default(),
             front_face: Default::default(),
         }

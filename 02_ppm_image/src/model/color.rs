@@ -1,4 +1,6 @@
-use super::{rtweekend::clamp, vec3::Vec3};
+use crate::util::rtweekend::clamp;
+
+use super::vec3::Vec3;
 
 pub trait Color {
     fn as_color_repr(&self, samples_per_pixel: usize) -> String;
