@@ -15,6 +15,7 @@ use util::{rtweekend::random_double, rtweekend::INFINITY};
 use crate::{
     material::{dielectric::Dielectric, lambertian::Lambertian, metal::Metal},
     model::{camera::Camera, color::Color, hit::HittableList, sphere::Sphere},
+    util::rtweekend::PI,
 };
 mod material;
 mod model;
@@ -29,41 +30,25 @@ fn main() {
     const MAX_DEPTH: i32 = 50;
 
     // World
+    let R = (PI / 4.0).cos();
     let mut world = HittableList::new();
 
-    let material_ground = Arc::new(Lambertian::new(&Vec3::new(0.8, 0.8, 0.0)));
-    let material_center = Arc::new(Lambertian::new(&Vec3::new(0.1, 0.2, 0.5)));
-    let material_left = Arc::new(Dielectric::new(1.5));
-    let material_right = Arc::new(Metal::new(&Vec3::new(0.8, 0.6, 0.2), 0.0));
+    let material_left = Arc::new(Lambertian::new(&Vec3::new(0.0, 0.0, 1.0)));
+    let material_right = Arc::new(Lambertian::new(&Vec3::new(1.0, 0.0, 0.0)));
 
     world.add(Arc::new(Sphere::new(
-        Point3::new(0.0, -100.5, -1.0),
-        100.0,
-        material_ground,
-    )));
-    world.add(Arc::new(Sphere::new(
-        Point3::new(0.0, 0.0, -1.0),
-        0.5,
-        material_center,
-    )));
-    world.add(Arc::new(Sphere::new(
-        Point3::new(-1.0, 0.0, -1.0),
-        0.5,
-        material_left.clone(),
-    )));
-    world.add(Arc::new(Sphere::new(
-        Point3::new(-1.0, 0.0, -1.0),
-        -0.4,
+        Point3::new(-R, 0.0, -1.0),
+        R,
         material_left,
     )));
     world.add(Arc::new(Sphere::new(
-        Point3::new(1.0, 0.0, -1.0),
-        0.5,
+        Point3::new(R, 0.0, -1.0),
+        R,
         material_right,
     )));
 
     // Camera
-    let camera = Camera::new();
+    let camera = Camera::new(90.0, ASPECT_RATIO);
 
     // Render
     print!("P3\n{} {}\n255\n", IMAGE_WIDTH, IMAGE_HEIGHT);
